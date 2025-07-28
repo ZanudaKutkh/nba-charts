@@ -21,48 +21,98 @@
         .container {
             max-width: 1200px;
             margin: 0 auto;
-            padding: 2rem;
+            padding: 1rem;
             background-color: #f7f5f3;
         }
         
         .header {
             text-align: center;
-            margin-bottom: 3rem;
+            margin-bottom: 2rem;
         }
         
         .main-title {
-            font-size: 2.5rem;
+            font-size: clamp(1.5rem, 4vw, 2.5rem);
             font-weight: bold;
             color: #2c2c2c;
             margin-bottom: 0.5rem;
+            line-height: 1.2;
         }
         
         .subtitle {
-            font-size: 1.5rem;
+            font-size: clamp(1rem, 3vw, 1.5rem);
             color: #555;
             margin-bottom: 1rem;
         }
         
         .description {
             color: #666;
+            font-size: clamp(0.8rem, 2vw, 0.9rem);
             max-width: 600px;
             margin: 0 auto;
+        }
+
+        .search-container {
+            margin: 1.5rem 0;
+            text-align: center;
+        }
+
+        .search-input {
+            padding: 0.75rem 1rem;
+            font-size: 1rem;
+            border: 2px solid #ddd6ce;
+            border-radius: 8px;
+            background-color: white;
+            color: #2c2c2c;
+            max-width: 300px;
+            width: 100%;
+            outline: none;
+            transition: border-color 0.3s ease;
+        }
+
+        .search-input:focus {
+            border-color: #5DADE2;
+        }
+
+        .search-input::placeholder {
+            color: #999;
+        }
+
+        .clear-search {
+            margin-left: 0.5rem;
+            padding: 0.75rem 1rem;
+            background-color: #E74C3C;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: background-color 0.3s ease;
+        }
+
+        .clear-search:hover {
+            background-color: #c0392b;
         }
         
         .chart-container {
             display: flex;
             justify-content: center;
-            margin-bottom: 2rem;
-            background-color: #f7f5f3;
+            margin-bottom: 1.5rem;
+            overflow-x: auto;
+            padding: 0.5rem;
+        }
+
+        #chart {
+            max-width: 100%;
+            height: auto;
         }
         
         .legend {
-            margin-top: 2rem;
+            margin: 1.5rem 0;
         }
         
         .legend h3 {
             text-align: center;
-            font-size: 1.25rem;
+            font-size: clamp(1rem, 2.5vw, 1.25rem);
             font-weight: 600;
             color: #2c2c2c;
             margin-bottom: 1rem;
@@ -72,7 +122,7 @@
             display: flex;
             justify-content: center;
             flex-wrap: wrap;
-            gap: 1.5rem;
+            gap: clamp(0.75rem, 2vw, 1.5rem);
         }
         
         .legend-item {
@@ -82,13 +132,13 @@
         }
         
         .legend-color {
-            width: 16px;
-            height: 16px;
+            width: clamp(12px, 3vw, 16px);
+            height: clamp(12px, 3vw, 16px);
             border-radius: 50%;
         }
         
         .legend-text {
-            font-size: 0.9rem;
+            font-size: clamp(0.75rem, 2vw, 0.9rem);
             font-weight: 500;
             color: #444;
         }
@@ -108,18 +158,19 @@
             top: 50% !important;
             transform: translate(-50%, -50%) !important;
             box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+            backdrop-filter: blur(8px);
         }
         
         .insights {
-            margin-top: 3rem;
+            margin-top: 2rem;
             background-color: #edeae6;
-            padding: 2rem;
+            padding: clamp(1rem, 3vw, 2rem);
             border-radius: 8px;
             border: 1px solid #ddd6ce;
         }
         
         .insights h3 {
-            font-size: 1.25rem;
+            font-size: clamp(1rem, 2.5vw, 1.25rem);
             font-weight: 600;
             color: #2c2c2c;
             margin-bottom: 1rem;
@@ -127,7 +178,7 @@
         
         .insights-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
             gap: 1.5rem;
         }
         
@@ -135,6 +186,7 @@
             font-weight: 600;
             margin-bottom: 0.5rem;
             color: #2c2c2c;
+            font-size: clamp(0.9rem, 2vw, 1rem);
         }
         
         .insight-section ul {
@@ -145,22 +197,22 @@
         .insight-section li {
             margin-bottom: 0.25rem;
             color: #444;
-            font-size: 0.9rem;
+            font-size: clamp(0.8rem, 2vw, 0.9rem);
         }
         
         .axis-label {
-            font-size: 1rem;
+            font-size: clamp(0.8rem, 2vw, 1rem);
             font-weight: 600;
             fill: #2c2c2c;
         }
         
         .tick-label {
-            font-size: 0.85rem;
+            font-size: clamp(0.7rem, 1.8vw, 0.85rem);
             fill: #555;
         }
         
         .pps-text {
-            font-size: 0.7rem;
+            font-size: clamp(0.6rem, 1.5vw, 0.7rem);
             font-weight: bold;
             fill: white;
             text-anchor: middle;
@@ -168,7 +220,7 @@
         }
         
         .player-name-text {
-            font-size: 0.85rem;
+            font-size: clamp(0.7rem, 1.8vw, 0.85rem);
             font-weight: 600;
             fill: #2c2c2c;
             text-anchor: middle;
@@ -180,21 +232,83 @@
             align-items: center;
             height: 400px;
             color: #666;
-            font-size: 1.1rem;
+            font-size: clamp(1rem, 2.5vw, 1.1rem);
         }
-        
+
+        /* Мобильная адаптация */
         @media (max-width: 768px) {
-            .main-title {
-                font-size: 2rem;
-            }
-            
-            .subtitle {
-                font-size: 1.25rem;
-            }
-            
             .container {
-                padding: 1rem;
+                padding: 0.5rem;
             }
+
+            .search-container {
+                margin: 1rem 0;
+            }
+
+            .search-input {
+                font-size: 16px; /* Prevents zoom on iOS */
+                margin-bottom: 0.5rem;
+            }
+
+            .clear-search {
+                margin-left: 0;
+                width: 100%;
+                max-width: 300px;
+            }
+
+            .chart-container {
+                padding: 0;
+                margin-bottom: 1rem;
+            }
+
+            .insights-grid {
+                grid-template-columns: 1fr;
+                gap: 1rem;
+            }
+
+            .hover-info {
+                max-width: 250px;
+                padding: 0.75rem;
+                font-size: 0.8rem;
+            }
+
+            .stats-grid {
+                grid-template-columns: 1fr;
+                gap: 8px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .legend-items {
+                flex-direction: column;
+                align-items: center;
+                gap: 0.5rem;
+            }
+
+            .hover-info {
+                max-width: 220px;
+                padding: 0.5rem;
+            }
+        }
+
+        /* Стили для поиска */
+        .circle-highlighted {
+            opacity: 1 !important;
+            stroke-width: 3px !important;
+            stroke: #FFD700 !important;
+        }
+
+        .circle-dimmed {
+            opacity: 0.2 !important;
+        }
+
+        .text-highlighted {
+            fill: #FFD700 !important;
+            font-weight: bold !important;
+        }
+
+        .text-dimmed {
+            opacity: 0.3 !important;
         }
     </style>
 </head>
@@ -207,6 +321,17 @@
             <p class="description">
                 Размер круга = количество набранных очков • Минимум 100 бросков за сезон
             </p>
+        </div>
+
+        <!-- Поиск -->
+        <div class="search-container">
+            <input 
+                type="text" 
+                id="search-input" 
+                class="search-input" 
+                placeholder="Поиск игрока (например: Devin или Booker)"
+            >
+            <button id="clear-search" class="clear-search" style="display: none;">Очистить</button>
         </div>
 
         <!-- График -->
@@ -266,6 +391,11 @@
     <div id="hover-info" class="hover-info"></div>
 
     <script>
+        // Глобальные переменные
+        let chartData = [];
+        let allCircles, allTexts;
+        let currentSearch = '';
+
         // Данные и настройки
         const colors = {
             'dunk': '#FF6B35',
@@ -281,13 +411,21 @@
             'mid': 'Мидрейндж'
         };
 
-        const keyPlayers = [
-            'Evan Mobley', 'DeMar DeRozan', 'Zach LaVine',
-            'Darius Garland', 'Payton Pritchard', 'Keyonte George', 'Devin Booker'
+        // Обновленный список ключевых игроков с конкретными типами бросков
+        const keyPlayersWithShots = [
+            { name: 'Evan Mobley', shot_type: 'dunk' },
+            { name: 'DeMar DeRozan', shot_type: 'mid' },
+            { name: 'Zach LaVine', shot_type: '3pt_above' },
+            { name: 'Darius Garland', shot_type: '3pt_above' },
+            { name: 'Payton Pritchard', shot_type: '3pt_above' },
+            { name: 'Keyonte George', shot_type: '3pt_above' },
+            { name: 'Devin Booker', shot_type: '3pt_above' }
         ];
 
-        function isKeyPlayer(playerName) {
-            return keyPlayers.some(key => playerName && playerName.includes(key));
+        function isKeyPlayer(playerName, shotType) {
+            return keyPlayersWithShots.some(kp => 
+                playerName && playerName.includes(kp.name) && shotType === kp.shot_type
+            );
         }
 
         function calculatePoints(player) {
@@ -333,11 +471,61 @@
             }
         }
 
+        // Функция поиска
+        function searchPlayers(searchTerm) {
+            currentSearch = searchTerm.toLowerCase().trim();
+            
+            if (!currentSearch) {
+                // Сброс поиска
+                allCircles.classed('circle-highlighted circle-dimmed', false);
+                allTexts.classed('text-highlighted text-dimmed', false);
+                document.getElementById('clear-search').style.display = 'none';
+                return;
+            }
+
+            document.getElementById('clear-search').style.display = 'inline-block';
+
+            // Находим совпадения
+            const matches = chartData.filter(d => 
+                d.player_name.toLowerCase().includes(currentSearch)
+            );
+
+            if (matches.length === 0) {
+                // Если нет совпадений, затемняем все
+                allCircles.classed('circle-dimmed', true).classed('circle-highlighted', false);
+                allTexts.classed('text-dimmed', true).classed('text-highlighted', false);
+                return;
+            }
+
+            // Подсвечиваем найденные, затемняем остальные
+            allCircles.each(function(d) {
+                const circle = d3.select(this);
+                const isMatch = matches.some(m => 
+                    m.player_name === d.player_name && m.shot_type === d.shot_type
+                );
+                
+                circle
+                    .classed('circle-highlighted', isMatch)
+                    .classed('circle-dimmed', !isMatch);
+            });
+
+            allTexts.each(function(d) {
+                const text = d3.select(this);
+                const isMatch = matches.some(m => 
+                    m.player_name === d.player_name && m.shot_type === d.shot_type
+                );
+                
+                text
+                    .classed('text-highlighted', isMatch)
+                    .classed('text-dimmed', !isMatch);
+            });
+        }
+
         // Создание графика
         async function createChart() {
-            const data = await loadData();
+            chartData = await loadData();
             
-            if (data.length === 0) {
+            if (chartData.length === 0) {
                 document.getElementById('loading').textContent = 'Ошибка загрузки данных';
                 return;
             }
@@ -347,31 +535,43 @@
             document.getElementById('chart').style.display = 'block';
 
             const svg = d3.select('#chart');
-            const margin = { top: 80, right: 120, bottom: 80, left: 80 };
-            const width = 1000 - margin.left - margin.right;
-            const height = 700 - margin.top - margin.bottom;
+            const containerWidth = Math.min(window.innerWidth - 40, 1000);
+            const containerHeight = Math.min(window.innerHeight * 0.7, 700);
+            
+            // Адаптивные размеры
+            svg.attr('width', containerWidth).attr('height', containerHeight);
+            
+            const margin = { 
+                top: containerHeight * 0.12, 
+                right: containerWidth * 0.12, 
+                bottom: containerHeight * 0.12, 
+                left: containerWidth * 0.08 
+            };
+            
+            const width = containerWidth - margin.left - margin.right;
+            const height = containerHeight - margin.top - margin.bottom;
 
             // Scales
             const xScale = d3.scaleLinear()
-                .domain(d3.extent(data, d => d.fga))
+                .domain(d3.extent(chartData, d => d.fga))
                 .range([0, width])
                 .nice();
 
             const yScale = d3.scaleLinear()
-                .domain(d3.extent(data, d => d.pps))
+                .domain(d3.extent(chartData, d => d.pps))
                 .range([height, 0])
                 .nice();
 
             const sizeScale = d3.scaleSqrt()
-                .domain(d3.extent(data, d => d.totalPoints))
-                .range([6, 30]);
+                .domain(d3.extent(chartData, d => d.totalPoints))
+                .range([Math.min(width, height) * 0.008, Math.min(width, height) * 0.04]);
 
             const g = svg.append('g')
                 .attr('transform', `translate(${margin.left},${margin.top})`);
 
             // Сетка
-            const xTicks = xScale.ticks(6);
-            const yTicks = yScale.ticks(8);
+            const xTicks = xScale.ticks(Math.max(4, Math.floor(width / 150)));
+            const yTicks = yScale.ticks(Math.max(4, Math.floor(height / 80)));
 
             g.selectAll('.x-grid')
                 .data(xTicks)
@@ -396,49 +596,59 @@
                 .attr('stroke-width', 1);
 
             // Точки данных
-            g.selectAll('.data-point')
-                .data(data)
+            allCircles = g.selectAll('.data-point')
+                .data(chartData)
                 .enter()
                 .append('circle')
+                .attr('class', 'data-point')
                 .attr('cx', d => xScale(d.fga))
                 .attr('cy', d => yScale(d.pps))
                 .attr('r', d => sizeScale(d.totalPoints))
                 .attr('fill', d => colors[d.shot_type])
-                .attr('fill-opacity', d => isKeyPlayer(d.player_name) ? 0.9 : 0.6)
-                .attr('stroke', d => isKeyPlayer(d.player_name) ? '#2c3e50' : 'white')
-                .attr('stroke-width', d => isKeyPlayer(d.player_name) ? 2 : 1)
+                .attr('fill-opacity', d => isKeyPlayer(d.player_name, d.shot_type) ? 0.9 : 0.6)
+                .attr('stroke', d => isKeyPlayer(d.player_name, d.shot_type) ? '#2c3e50' : 'white')
+                .attr('stroke-width', d => isKeyPlayer(d.player_name, d.shot_type) ? 2 : 1)
                 .style('cursor', 'pointer')
                 .on('mouseover', handleMouseOver)
                 .on('mouseout', handleMouseOut);
 
-            // PPS внутри кругов для ключевых игроков
-            data.filter(d => isKeyPlayer(d.player_name)).forEach(player => {
+            // PPS внутри кругов и имена для ключевых игроков
+            const keyPlayerTexts = [];
+            chartData.filter(d => isKeyPlayer(d.player_name, d.shot_type)).forEach(player => {
                 const x = xScale(player.fga);
                 const y = yScale(player.pps);
                 const r = sizeScale(player.totalPoints);
 
-                g.append('text')
+                // PPS внутри круга
+                const ppsText = g.append('text')
                     .attr('class', 'pps-text')
                     .attr('x', x)
                     .attr('y', y)
+                    .datum(player)
                     .text(player.pps.toFixed(2));
 
-                g.append('text')
+                // Имя игрока снаружи
+                const nameText = g.append('text')
                     .attr('class', 'player-name-text')
                     .attr('x', x)
                     .attr('y', y - r - 8)
+                    .datum(player)
                     .text(player.player_name);
+
+                keyPlayerTexts.push(ppsText, nameText);
             });
+
+            allTexts = d3.selectAll(keyPlayerTexts);
 
             // Оси
             g.append('g')
                 .attr('transform', `translate(0,${height})`)
-                .call(d3.axisBottom(xScale).ticks(6))
+                .call(d3.axisBottom(xScale).ticks(xTicks.length))
                 .selectAll('text')
                 .attr('class', 'tick-label');
 
             g.append('g')
-                .call(d3.axisLeft(yScale).ticks(8))
+                .call(d3.axisLeft(yScale).ticks(yTicks.length))
                 .selectAll('text')
                 .attr('class', 'tick-label');
 
@@ -446,7 +656,7 @@
             g.append('text')
                 .attr('class', 'axis-label')
                 .attr('x', width / 2)
-                .attr('y', height + 50)
+                .attr('y', height + margin.bottom * 0.7)
                 .attr('text-anchor', 'middle')
                 .text('Количество бросков');
 
@@ -454,9 +664,22 @@
                 .attr('class', 'axis-label')
                 .attr('transform', 'rotate(-90)')
                 .attr('x', -height / 2)
-                .attr('y', -50)
+                .attr('y', -margin.left * 0.7)
                 .attr('text-anchor', 'middle')
                 .text('Очки за бросок');
+
+            // Настройка поиска
+            const searchInput = document.getElementById('search-input');
+            const clearButton = document.getElementById('clear-search');
+
+            searchInput.addEventListener('input', (e) => {
+                searchPlayers(e.target.value);
+            });
+
+            clearButton.addEventListener('click', () => {
+                searchInput.value = '';
+                searchPlayers('');
+            });
         }
 
         // Hover handlers
@@ -500,6 +723,13 @@
 
             document.getElementById('hover-info').style.display = 'none';
         }
+
+        // Адаптация при изменении размера окна
+        window.addEventListener('resize', () => {
+            // Простое обновление - пересоздание графика
+            d3.select('#chart').selectAll('*').remove();
+            createChart();
+        });
 
         // Загрузка D3.js и создание графика
         const script = document.createElement('script');
