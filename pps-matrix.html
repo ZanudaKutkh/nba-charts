@@ -79,7 +79,7 @@
         let allCircles, allTexts;
         let currentSearch = '';
 
-        // ПОЛНОСТЬЮ ПЕРЕПИСАННАЯ функция поиска с принудительным скрытием текста
+        // ИСПРАВЛЕННАЯ функция поиска - скрываем ВСЕ тексты ключевых игроков при поиске
         function searchPlayers(searchTerm) {
             currentSearch = searchTerm.toLowerCase().trim();
             
@@ -95,12 +95,8 @@
                         .classed('circle-normal', !isKey);
                 });
 
-                // Показываем все тексты ключевых игроков
-                allTexts
-                    .attr('opacity', 1)
-                    .style('display', 'block')
-                    .classed('text-dimmed text-highlighted text-hidden', false)
-                    .classed('text-key-player', true);
+                // ПОКАЗЫВАЕМ все тексты ключевых игроков
+                allTexts.attr('opacity', 1).style('display', 'block');
 
                 document.getElementById('clear-search').style.display = 'none';
                 return;
@@ -108,22 +104,19 @@
 
             document.getElementById('clear-search').style.display = 'inline-block';
 
+            // ПРИ ЛЮБОМ ПОИСКЕ - СКРЫВАЕМ ВСЕ ТЕКСТЫ КЛЮЧЕВЫХ ИГРОКОВ
+            allTexts.attr('opacity', 0).style('display', 'none');
+
             // Находим совпадения
             const matches = chartData.filter(d => 
                 d.player_name.toLowerCase().includes(currentSearch)
             );
 
             if (matches.length === 0) {
-                // Если нет совпадений, затемняем все и ПРИНУДИТЕЛЬНО СКРЫВАЕМ все тексты
-                allCircles.classed('circle-dimmed', true)
-                          .classed('circle-highlighted circle-key-player circle-normal', false);
-                
-                // ПРИНУДИТЕЛЬНО СКРЫВАЕМ ВСЕ ТЕКСТЫ ВСЕМИ СПОСОБАМИ
-                allTexts
-                    .attr('opacity', 0)
-                    .style('display', 'none')
-                    .classed('text-hidden', true)
-                    .classed('text-key-player text-highlighted', false);
+                // Если нет совпадений, затемняем все круги
+                allCircles
+                    .classed('circle-dimmed', true)
+                    .classed('circle-highlighted circle-key-player circle-normal', false);
                 return;
             }
 
@@ -138,30 +131,6 @@
                     .classed('circle-highlighted', isMatch)
                     .classed('circle-dimmed', !isMatch)
                     .classed('circle-key-player circle-normal', false);
-            });
-
-            // УПРАВЛЯЕМ ТЕКСТАМИ для каждого элемента отдельно
-            allTexts.each(function(d) {
-                const text = d3.select(this);
-                const isMatch = matches.some(m => 
-                    m.player_name === d.player_name && m.shot_type === d.shot_type
-                );
-                
-                if (isMatch) {
-                    // Показываем найденные
-                    text
-                        .attr('opacity', 1)
-                        .style('display', 'block')
-                        .classed('text-highlighted', true)
-                        .classed('text-dimmed text-hidden text-key-player', false);
-                } else {
-                    // ПРИНУДИТЕЛЬНО СКРЫВАЕМ не найденные
-                    text
-                        .attr('opacity', 0)
-                        .style('display', 'none')
-                        .classed('text-hidden', true)
-                        .classed('text-highlighted text-key-player', false);
-                }
             });
         }
 
@@ -199,7 +168,7 @@
 
             const sizeScale = d3.scaleSqrt()
                 .domain(d3.extent(chartData, d => d.totalPoints))
-                .range([Math.min(width, height) * 0.008, Math.min(width, height) * 0.04]);
+                .range([Math.min(width, height) * 0.015, Math.min(width, height) * 0.08]); // Увеличены размеры
 
             const g = svg.append('g')
                 .attr('transform', `translate(${dimensions.margin.left},${dimensions.margin.top})`);
@@ -207,7 +176,7 @@
             // Создаем сетку
             NBA_Utils.createGrid(g, xScale, yScale, width, height);
 
-            // Точки данных
+            // Точки данных - возвращаем ключевых игроков
             allCircles = g.selectAll('.data-point')
                 .data(chartData)
                 .enter()
@@ -221,33 +190,31 @@
                 .on('mouseover', NBA_Hover.handlePPSMouseOver)
                 .on('mouseout', NBA_Hover.handleMouseOut);
 
-            // PPS внутри кругов и имена для ключевых игроков
-            const keyPlayerTexts = [];
+            // Возвращаем PPS внутри кругов и имена для ключевых игроков
             chartData.filter(d => NBA_Utils.isKeyPlayer(d.player_name, d.shot_type)).forEach(player => {
                 const x = xScale(player.fga);
                 const y = yScale(player.pps);
                 const r = sizeScale(player.totalPoints);
 
                 // PPS внутри круга
-                const ppsText = g.append('text')
-                    .attr('class', 'pps-text text-key-player')
+                g.append('text')
+                    .attr('class', 'pps-text key-player-text')
                     .attr('x', x)
                     .attr('y', y)
                     .datum(player)
                     .text(player.pps.toFixed(2));
 
                 // Имя игрока снаружи
-                const nameText = g.append('text')
-                    .attr('class', 'player-name-text text-key-player')
+                g.append('text')
+                    .attr('class', 'player-name-text key-player-text')
                     .attr('x', x)
                     .attr('y', y - r - 8)
                     .datum(player)
                     .text(player.player_name);
-
-                keyPlayerTexts.push(ppsText, nameText);
             });
 
-            allTexts = d3.selectAll(keyPlayerTexts);
+            // Захватываем ВСЕ тексты ключевых игроков
+            allTexts = g.selectAll('.key-player-text');
 
             // Создаем оси
             NBA_Utils.createAxes(g, xScale, yScale, width, height, dimensions.margin, 
