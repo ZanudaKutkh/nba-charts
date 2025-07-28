@@ -1,0 +1,407 @@
+/* shared.css - Общие стили для всех страниц NBA Charts */
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    background-color: #f7f5f3;
+    color: #2c2c2c;
+    line-height: 1.6;
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 1rem;
+    background-color: #f7f5f3;
+}
+
+/* Заголовки */
+.header {
+    text-align: center;
+    margin-bottom: 2rem;
+}
+
+.main-title {
+    font-size: clamp(1.5rem, 4vw, 2.5rem);
+    font-weight: bold;
+    color: #2c2c2c;
+    margin-bottom: 0.5rem;
+    line-height: 1.2;
+}
+
+.subtitle {
+    font-size: clamp(1rem, 3vw, 1.5rem);
+    color: #555;
+    margin-bottom: 1rem;
+}
+
+.description {
+    color: #666;
+    font-size: clamp(0.8rem, 2vw, 0.9rem);
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+/* Навигация */
+.site-navigation {
+    background-color: #edeae6;
+    padding: 1rem;
+    border-radius: 8px;
+    margin-bottom: 2rem;
+    border: 1px solid #ddd6ce;
+}
+
+.nav-breadcrumb {
+    text-align: center;
+    margin-bottom: 1rem;
+    font-size: 0.9rem;
+    color: #666;
+}
+
+.nav-breadcrumb a {
+    color: #5DADE2;
+    text-decoration: none;
+}
+
+.nav-breadcrumb a:hover {
+    text-decoration: underline;
+}
+
+.chart-navigation {
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+    flex-wrap: wrap;
+}
+
+.nav-button {
+    padding: 0.75rem 1.5rem;
+    background-color: white;
+    border: 2px solid #ddd6ce;
+    border-radius: 8px;
+    color: #2c2c2c;
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 0.9rem;
+    transition: all 0.3s ease;
+    cursor: pointer;
+    display: inline-block;
+}
+
+.nav-button:hover {
+    background-color: #f0f0f0;
+    border-color: #5DADE2;
+    transform: translateY(-1px);
+}
+
+.nav-button.active {
+    background-color: #5DADE2;
+    color: white;
+    border-color: #5DADE2;
+}
+
+/* Поиск */
+.search-container {
+    margin: 1.5rem 0;
+    text-align: center;
+}
+
+.search-input {
+    padding: 0.75rem 1rem;
+    font-size: 1rem;
+    border: 2px solid #ddd6ce;
+    border-radius: 8px;
+    background-color: white;
+    color: #2c2c2c;
+    max-width: 300px;
+    width: 100%;
+    outline: none;
+    transition: border-color 0.3s ease;
+}
+
+.search-input:focus {
+    border-color: #5DADE2;
+}
+
+.search-input::placeholder {
+    color: #999;
+}
+
+.clear-search {
+    margin-left: 0.5rem;
+    padding: 0.75rem 1rem;
+    background-color: #E74C3C;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 0.9rem;
+    transition: background-color 0.3s ease;
+}
+
+.clear-search:hover {
+    background-color: #c0392b;
+}
+
+/* График */
+.chart-container {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 1.5rem;
+    overflow-x: auto;
+    padding: 0.5rem;
+}
+
+#chart, #evolution-chart {
+    max-width: 100%;
+    height: auto;
+}
+
+/* Легенда */
+.legend {
+    margin: 1.5rem 0;
+}
+
+.legend h3 {
+    text-align: center;
+    font-size: clamp(1rem, 2.5vw, 1.25rem);
+    font-weight: 600;
+    color: #2c2c2c;
+    margin-bottom: 1rem;
+}
+
+.legend-items {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: clamp(0.75rem, 2vw, 1.5rem);
+}
+
+.legend-item {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.legend-color {
+    width: clamp(12px, 3vw, 16px);
+    height: clamp(12px, 3vw, 16px);
+    border-radius: 50%;
+}
+
+.legend-text {
+    font-size: clamp(0.75rem, 2vw, 0.9rem);
+    font-weight: 500;
+    color: #444;
+}
+
+/* Hover tooltip */
+.hover-info {
+    position: fixed;
+    background: rgba(44, 44, 44, 0.95);
+    color: white;
+    padding: 1rem;
+    border-radius: 8px;
+    font-size: 0.85rem;
+    pointer-events: none;
+    z-index: 1000;
+    display: none;
+    max-width: 280px;
+    left: 50% !important;
+    top: 50% !important;
+    transform: translate(-50%, -50%) !important;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+    backdrop-filter: blur(8px);
+}
+
+/* Инсайты */
+.insights {
+    margin-top: 2rem;
+    background-color: #edeae6;
+    padding: clamp(1rem, 3vw, 2rem);
+    border-radius: 8px;
+    border: 1px solid #ddd6ce;
+}
+
+.insights h3 {
+    font-size: clamp(1rem, 2.5vw, 1.25rem);
+    font-weight: 600;
+    color: #2c2c2c;
+    margin-bottom: 1rem;
+}
+
+.insights-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 1.5rem;
+}
+
+.insight-section h4 {
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+    color: #2c2c2c;
+    font-size: clamp(0.9rem, 2vw, 1rem);
+}
+
+.insight-section ul {
+    list-style: none;
+    padding: 0;
+}
+
+.insight-section li {
+    margin-bottom: 0.25rem;
+    color: #444;
+    font-size: clamp(0.8rem, 2vw, 0.9rem);
+}
+
+/* SVG стили */
+.axis-label {
+    font-size: clamp(0.8rem, 2vw, 1rem);
+    font-weight: 600;
+    fill: #2c2c2c;
+}
+
+.tick-label {
+    font-size: clamp(0.7rem, 1.8vw, 0.85rem);
+    fill: #555;
+}
+
+.pps-text {
+    font-size: clamp(0.6rem, 1.5vw, 0.7rem);
+    font-weight: bold;
+    fill: white;
+    text-anchor: middle;
+    dominant-baseline: middle;
+}
+
+.player-name-text {
+    font-size: clamp(0.7rem, 1.8vw, 0.85rem);
+    font-weight: 600;
+    fill: #2c2c2c;
+    text-anchor: middle;
+}
+
+.loading {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 400px;
+    color: #666;
+    font-size: clamp(1rem, 2.5vw, 1.1rem);
+}
+
+/* Стили для поиска */
+.circle-highlighted {
+    opacity: 1 !important;
+    stroke-width: 3px !important;
+    stroke: #FFD700 !important;
+}
+
+.circle-dimmed {
+    opacity: 0.2 !important;
+}
+
+.circle-key-player {
+    opacity: 0.9 !important;
+    stroke-width: 2px !important;
+    stroke: #2c3e50 !important;
+}
+
+.circle-normal {
+    opacity: 0.6 !important;
+    stroke-width: 1px !important;
+    stroke: white !important;
+}
+
+.text-highlighted {
+    fill: #FFD700 !important;
+    font-weight: bold !important;
+    opacity: 1 !important;
+}
+
+.text-dimmed {
+    opacity: 0.3 !important;
+}
+
+.text-key-player {
+    fill: #2c2c2c !important;
+    font-weight: 600 !important;
+    opacity: 1 !important;
+}
+
+.text-normal {
+    fill: #2c2c2c !important;
+    font-weight: 600 !important;
+    opacity: 1 !important;
+}
+
+/* Мобильная адаптация */
+@media (max-width: 768px) {
+    .container {
+        padding: 0.5rem;
+    }
+
+    .chart-navigation {
+        gap: 0.5rem;
+        margin: 1rem 0;
+    }
+
+    .nav-button {
+        padding: 0.5rem 1rem;
+        font-size: 0.8rem;
+    }
+
+    .search-container {
+        margin: 1rem 0;
+    }
+
+    .search-input {
+        font-size: 16px; /* Prevents zoom on iOS */
+        margin-bottom: 0.5rem;
+    }
+
+    .clear-search {
+        margin-left: 0;
+        width: 100%;
+        max-width: 300px;
+    }
+
+    .chart-container {
+        padding: 0;
+        margin-bottom: 1rem;
+    }
+
+    .insights-grid {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+    }
+
+    .hover-info {
+        max-width: 250px;
+        padding: 0.75rem;
+        font-size: 0.8rem;
+    }
+
+    .stats-grid {
+        grid-template-columns: 1fr;
+        gap: 8px;
+    }
+}
+
+@media (max-width: 480px) {
+    .legend-items {
+        flex-direction: column;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .hover-info {
+        max-width: 220px;
+        padding: 0.5rem;
+    }
+}
