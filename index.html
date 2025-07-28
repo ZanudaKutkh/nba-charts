@@ -1,0 +1,511 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>НБА: Эффективность vs Объем - Сезон 2024-25</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background-color: #f7f5f3;
+            color: #2c2c2c;
+            line-height: 1.6;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+            background-color: #f7f5f3;
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+        
+        .main-title {
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: #2c2c2c;
+            margin-bottom: 0.5rem;
+        }
+        
+        .subtitle {
+            font-size: 1.5rem;
+            color: #555;
+            margin-bottom: 1rem;
+        }
+        
+        .description {
+            color: #666;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        
+        .chart-container {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 2rem;
+            background-color: #f7f5f3;
+        }
+        
+        .legend {
+            margin-top: 2rem;
+        }
+        
+        .legend h3 {
+            text-align: center;
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: #2c2c2c;
+            margin-bottom: 1rem;
+        }
+        
+        .legend-items {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 1.5rem;
+        }
+        
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .legend-color {
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+        }
+        
+        .legend-text {
+            font-size: 0.9rem;
+            font-weight: 500;
+            color: #444;
+        }
+        
+        .hover-info {
+            position: fixed;
+            background: rgba(44, 44, 44, 0.95);
+            color: white;
+            padding: 1rem;
+            border-radius: 8px;
+            font-size: 0.85rem;
+            pointer-events: none;
+            z-index: 1000;
+            display: none;
+            max-width: 280px;
+            left: 50% !important;
+            top: 50% !important;
+            transform: translate(-50%, -50%) !important;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+        }
+        
+        .insights {
+            margin-top: 3rem;
+            background-color: #edeae6;
+            padding: 2rem;
+            border-radius: 8px;
+            border: 1px solid #ddd6ce;
+        }
+        
+        .insights h3 {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: #2c2c2c;
+            margin-bottom: 1rem;
+        }
+        
+        .insights-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+        }
+        
+        .insight-section h4 {
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: #2c2c2c;
+        }
+        
+        .insight-section ul {
+            list-style: none;
+            padding: 0;
+        }
+        
+        .insight-section li {
+            margin-bottom: 0.25rem;
+            color: #444;
+            font-size: 0.9rem;
+        }
+        
+        .axis-label {
+            font-size: 1rem;
+            font-weight: 600;
+            fill: #2c2c2c;
+        }
+        
+        .tick-label {
+            font-size: 0.85rem;
+            fill: #555;
+        }
+        
+        .pps-text {
+            font-size: 0.7rem;
+            font-weight: bold;
+            fill: white;
+            text-anchor: middle;
+            dominant-baseline: middle;
+        }
+        
+        .player-name-text {
+            font-size: 0.85rem;
+            font-weight: 600;
+            fill: #2c2c2c;
+            text-anchor: middle;
+        }
+        
+        .loading {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 400px;
+            color: #666;
+            font-size: 1.1rem;
+        }
+        
+        @media (max-width: 768px) {
+            .main-title {
+                font-size: 2rem;
+            }
+            
+            .subtitle {
+                font-size: 1.25rem;
+            }
+            
+            .container {
+                padding: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Заголовок -->
+        <div class="header">
+            <h1 class="main-title">Эффективность vs Объем</h1>
+            <h2 class="subtitle">НБА сезон 2024-25: Очки за бросок</h2>
+            <p class="description">
+                Размер круга = количество набранных очков • Минимум 100 бросков за сезон
+            </p>
+        </div>
+
+        <!-- График -->
+        <div class="chart-container">
+            <div id="loading" class="loading">Загрузка данных НБА...</div>
+            <svg id="chart" width="1000" height="700" style="display: none;"></svg>
+        </div>
+
+        <!-- Легенда -->
+        <div class="legend">
+            <h3>Типы бросков</h3>
+            <div class="legend-items">
+                <div class="legend-item">
+                    <div class="legend-color" style="background-color: #FF6B35;"></div>
+                    <span class="legend-text">Данки</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color" style="background-color: #5DADE2;"></div>
+                    <span class="legend-text">Трешки с дуги</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color" style="background-color: #27AE60;"></div>
+                    <span class="legend-text">Угловые трешки</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color" style="background-color: #E74C3C;"></div>
+                    <span class="legend-text">Мидрейндж</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Инсайты -->
+        <div class="insights">
+            <h3>Ключевые инсайты</h3>
+            <div class="insights-grid">
+                <div class="insight-section">
+                    <h4>🔥 Самые эффективные объемные броски:</h4>
+                    <ul>
+                        <li>• Zach LaVine (трешки с дуги) - 1.324 очка за бросок</li>
+                        <li>• Darius Garland (трешки с дуги) - высокая эффективность</li>
+                        <li>• Payton Pritchard (трешки с дуги) - отличный процент</li>
+                    </ul>
+                </div>
+                <div class="insight-section">
+                    <h4>❌ Самые неэффективные объемные броски:</h4>
+                    <ul>
+                        <li>• DeMar DeRozan (мидрейндж) - 0.916 очка за бросок</li>
+                        <li>• Keyonte George (трешки с дуги) - 0.956 очка за бросок</li>
+                        <li>• Devin Booker (трешки с дуги) - 0.989 очка за бросок</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Hover tooltip -->
+    <div id="hover-info" class="hover-info"></div>
+
+    <script>
+        // Данные и настройки
+        const colors = {
+            'dunk': '#FF6B35',
+            '3pt_above': '#5DADE2', 
+            'corner': '#27AE60',
+            'mid': '#E74C3C'
+        };
+
+        const shotTypeNames = {
+            'dunk': 'Данки',
+            '3pt_above': 'Трешки с дуги',
+            'corner': 'Угловые трешки', 
+            'mid': 'Мидрейндж'
+        };
+
+        const keyPlayers = [
+            'Evan Mobley', 'DeMar DeRozan', 'Zach LaVine',
+            'Darius Garland', 'Payton Pritchard', 'Keyonte George', 'Devin Booker'
+        ];
+
+        function isKeyPlayer(playerName) {
+            return keyPlayers.some(key => playerName && playerName.includes(key));
+        }
+
+        function calculatePoints(player) {
+            const pointsPerShot = (player.shot_type === '3pt_above' || player.shot_type === 'corner') ? 3 : 2;
+            return player.fgm * pointsPerShot;
+        }
+
+        // Парсинг CSV
+        function parseCSV(csvText) {
+            const lines = csvText.trim().split('\n');
+            const headers = lines[0].split(',');
+            
+            return lines.slice(1)
+                .filter(line => line.trim())
+                .map(line => {
+                    const values = line.split(',');
+                    return {
+                        player_name: values[0],
+                        shot_type: values[1],
+                        fga: parseInt(values[2]),
+                        fgm: parseInt(values[3]),
+                        pps: parseFloat(values[4]),
+                        fg_pct: parseFloat(values[5]),
+                        rate: parseFloat(values[6])
+                    };
+                })
+                .filter(row => row.fga >= 100 && row.shot_type !== '3pt_all')
+                .map(row => ({
+                    ...row,
+                    totalPoints: calculatePoints(row)
+                }));
+        }
+
+        // Загрузка данных
+        async function loadData() {
+            try {
+                const response = await fetch('./top50_players_2024.csv');
+                const csvText = await response.text();
+                return parseCSV(csvText);
+            } catch (error) {
+                console.error('Ошибка загрузки данных:', error);
+                return [];
+            }
+        }
+
+        // Создание графика
+        async function createChart() {
+            const data = await loadData();
+            
+            if (data.length === 0) {
+                document.getElementById('loading').textContent = 'Ошибка загрузки данных';
+                return;
+            }
+
+            // Скрываем загрузку, показываем график
+            document.getElementById('loading').style.display = 'none';
+            document.getElementById('chart').style.display = 'block';
+
+            const svg = d3.select('#chart');
+            const margin = { top: 80, right: 120, bottom: 80, left: 80 };
+            const width = 1000 - margin.left - margin.right;
+            const height = 700 - margin.top - margin.bottom;
+
+            // Scales
+            const xScale = d3.scaleLinear()
+                .domain(d3.extent(data, d => d.fga))
+                .range([0, width])
+                .nice();
+
+            const yScale = d3.scaleLinear()
+                .domain(d3.extent(data, d => d.pps))
+                .range([height, 0])
+                .nice();
+
+            const sizeScale = d3.scaleSqrt()
+                .domain(d3.extent(data, d => d.totalPoints))
+                .range([6, 30]);
+
+            const g = svg.append('g')
+                .attr('transform', `translate(${margin.left},${margin.top})`);
+
+            // Сетка
+            const xTicks = xScale.ticks(6);
+            const yTicks = yScale.ticks(8);
+
+            g.selectAll('.x-grid')
+                .data(xTicks)
+                .enter()
+                .append('line')
+                .attr('x1', d => xScale(d))
+                .attr('y1', 0)
+                .attr('x2', d => xScale(d))
+                .attr('y2', height)
+                .attr('stroke', '#e8e4df')
+                .attr('stroke-width', 1);
+
+            g.selectAll('.y-grid')
+                .data(yTicks)
+                .enter()
+                .append('line')
+                .attr('x1', 0)
+                .attr('y1', d => yScale(d))
+                .attr('x2', width)
+                .attr('y2', d => yScale(d))
+                .attr('stroke', '#e8e4df')
+                .attr('stroke-width', 1);
+
+            // Точки данных
+            g.selectAll('.data-point')
+                .data(data)
+                .enter()
+                .append('circle')
+                .attr('cx', d => xScale(d.fga))
+                .attr('cy', d => yScale(d.pps))
+                .attr('r', d => sizeScale(d.totalPoints))
+                .attr('fill', d => colors[d.shot_type])
+                .attr('fill-opacity', d => isKeyPlayer(d.player_name) ? 0.9 : 0.6)
+                .attr('stroke', d => isKeyPlayer(d.player_name) ? '#2c3e50' : 'white')
+                .attr('stroke-width', d => isKeyPlayer(d.player_name) ? 2 : 1)
+                .style('cursor', 'pointer')
+                .on('mouseover', handleMouseOver)
+                .on('mouseout', handleMouseOut);
+
+            // PPS внутри кругов для ключевых игроков
+            data.filter(d => isKeyPlayer(d.player_name)).forEach(player => {
+                const x = xScale(player.fga);
+                const y = yScale(player.pps);
+                const r = sizeScale(player.totalPoints);
+
+                g.append('text')
+                    .attr('class', 'pps-text')
+                    .attr('x', x)
+                    .attr('y', y)
+                    .text(player.pps.toFixed(2));
+
+                g.append('text')
+                    .attr('class', 'player-name-text')
+                    .attr('x', x)
+                    .attr('y', y - r - 8)
+                    .text(player.player_name);
+            });
+
+            // Оси
+            g.append('g')
+                .attr('transform', `translate(0,${height})`)
+                .call(d3.axisBottom(xScale).ticks(6))
+                .selectAll('text')
+                .attr('class', 'tick-label');
+
+            g.append('g')
+                .call(d3.axisLeft(yScale).ticks(8))
+                .selectAll('text')
+                .attr('class', 'tick-label');
+
+            // Названия осей
+            g.append('text')
+                .attr('class', 'axis-label')
+                .attr('x', width / 2)
+                .attr('y', height + 50)
+                .attr('text-anchor', 'middle')
+                .text('Количество бросков');
+
+            g.append('text')
+                .attr('class', 'axis-label')
+                .attr('transform', 'rotate(-90)')
+                .attr('x', -height / 2)
+                .attr('y', -50)
+                .attr('text-anchor', 'middle')
+                .text('Очки за бросок');
+        }
+
+        // Hover handlers
+        function handleMouseOver(event, d) {
+            d3.select(this)
+                .style('filter', 'drop-shadow(0 4px 8px rgba(0,0,0,0.3))');
+
+            const hoverInfo = document.getElementById('hover-info');
+            hoverInfo.innerHTML = `
+                <div style="font-weight: bold; margin-bottom: 4px; font-size: 1rem;">${d.player_name}</div>
+                <div style="color: #bbb; margin-bottom: 12px;">${shotTypeNames[d.shot_type]}</div>
+                <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; font-size: 0.85rem;">
+                    <div>
+                        <div style="font-weight: bold; color: #fff;">${d.pps.toFixed(3)}</div>
+                        <div style="color: #aaa;">Очки за бросок</div>
+                    </div>
+                    <div>
+                        <div style="font-weight: bold; color: #fff;">${d.fga}</div>
+                        <div style="color: #aaa;">Количество бросков</div>
+                    </div>
+                    <div>
+                        <div style="font-weight: bold; color: #fff;">${d.totalPoints}</div>
+                        <div style="color: #aaa;">Всего очков</div>
+                    </div>
+                    <div>
+                        <div style="font-weight: bold; color: #fff;">${(d.fg_pct * 100).toFixed(1)}%</div>
+                        <div style="color: #aaa;">Процент попаданий</div>
+                    </div>
+                    <div>
+                        <div style="font-weight: bold; color: #fff;">${(d.rate * 100).toFixed(1)}%</div>
+                        <div style="color: #aaa;">Доля бросков</div>
+                    </div>
+                </div>
+            `;
+            hoverInfo.style.display = 'block';
+        }
+
+        function handleMouseOut() {
+            d3.select(this)
+                .style('filter', 'none');
+
+            document.getElementById('hover-info').style.display = 'none';
+        }
+
+        // Загрузка D3.js и создание графика
+        const script = document.createElement('script');
+        script.src = 'https://cdnjs.cloudflare.com/ajax/libs/d3/7.8.5/d3.min.js';
+        script.onload = createChart;
+        document.head.appendChild(script);
+    </script>
+</body>
+</html>
