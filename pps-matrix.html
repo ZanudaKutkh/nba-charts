@@ -79,7 +79,7 @@
         let allCircles, allTexts;
         let currentSearch = '';
 
-        // ИСПРАВЛЕННАЯ функция поиска - убираем ВСЕ тексты при поиске
+        // ПОЛНОСТЬЮ ПЕРЕПИСАННАЯ функция поиска с принудительным скрытием текста
         function searchPlayers(searchTerm) {
             currentSearch = searchTerm.toLowerCase().trim();
             
@@ -95,18 +95,12 @@
                         .classed('circle-normal', !isKey);
                 });
 
-                // Показываем тексты только для ключевых игроков
-                allTexts.style('display', function(d) {
-                    return NBA_Utils.isKeyPlayer(d.player_name, d.shot_type) ? 'block' : 'none';
-                });
-
-                allTexts.each(function(d) {
-                    const text = d3.select(this);
-                    
-                    text
-                        .classed('text-highlighted text-dimmed', false)
-                        .classed('text-key-player', true);
-                });
+                // Показываем все тексты ключевых игроков
+                allTexts
+                    .attr('opacity', 1)
+                    .style('display', 'block')
+                    .classed('text-dimmed text-highlighted text-hidden', false)
+                    .classed('text-key-player', true);
 
                 document.getElementById('clear-search').style.display = 'none';
                 return;
@@ -120,12 +114,16 @@
             );
 
             if (matches.length === 0) {
-                // Если нет совпадений, затемняем все и СКРЫВАЕМ все тексты
+                // Если нет совпадений, затемняем все и ПРИНУДИТЕЛЬНО СКРЫВАЕМ все тексты
                 allCircles.classed('circle-dimmed', true)
                           .classed('circle-highlighted circle-key-player circle-normal', false);
                 
-                // УБИРАЕМ ВСЕ ТЕКСТЫ
-                allTexts.style('display', 'none');
+                // ПРИНУДИТЕЛЬНО СКРЫВАЕМ ВСЕ ТЕКСТЫ ВСЕМИ СПОСОБАМИ
+                allTexts
+                    .attr('opacity', 0)
+                    .style('display', 'none')
+                    .classed('text-hidden', true)
+                    .classed('text-key-player text-highlighted', false);
                 return;
             }
 
@@ -142,7 +140,7 @@
                     .classed('circle-key-player circle-normal', false);
             });
 
-            // ПОКАЗЫВАЕМ тексты только для найденных игроков
+            // УПРАВЛЯЕМ ТЕКСТАМИ для каждого элемента отдельно
             allTexts.each(function(d) {
                 const text = d3.select(this);
                 const isMatch = matches.some(m => 
@@ -150,11 +148,19 @@
                 );
                 
                 if (isMatch) {
-                    text.style('display', 'block')
+                    // Показываем найденные
+                    text
+                        .attr('opacity', 1)
+                        .style('display', 'block')
                         .classed('text-highlighted', true)
-                        .classed('text-dimmed text-key-player', false);
+                        .classed('text-dimmed text-hidden text-key-player', false);
                 } else {
-                    text.style('display', 'none');
+                    // ПРИНУДИТЕЛЬНО СКРЫВАЕМ не найденные
+                    text
+                        .attr('opacity', 0)
+                        .style('display', 'none')
+                        .classed('text-hidden', true)
+                        .classed('text-highlighted text-key-player', false);
                 }
             });
         }

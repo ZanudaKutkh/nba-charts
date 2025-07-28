@@ -325,7 +325,7 @@ body {
 }
 
 .text-dimmed {
-    opacity: 0.3 !important;
+    opacity: 0 !important;
 }
 
 .text-key-player {
@@ -338,6 +338,11 @@ body {
     fill: #2c2c2c !important;
     font-weight: 600 !important;
     opacity: 1 !important;
+}
+
+.text-hidden {
+    opacity: 0 !important;
+    display: none !important;
 }
 
 /* Мобильная адаптация */
