@@ -67,37 +67,6 @@
                 </div>
             </div>
         </div>
-
-        <!-- Инсайты -->
-        <div class="insights">
-            <h3>Ключевые инсайты</h3>
-            <div class="insights-grid">
-                <div class="insight-section">
-                    <h4>🔥 Самые эффективные объемные броски:</h4>
-                    <ul>
-                        <li>• Zach LaVine (трешки с дуги) - 1.324 очка за бросок</li>
-                        <li>• Darius Garland (трешки с дуги) - высокая эффективность</li>
-                        <li>• Payton Pritchard (трешки с дуги) - отличный процент</li>
-                    </ul>
-                </div>
-                <div class="insight-section">
-                    <h4>❌ Самые неэффективные объемные броски:</h4>
-                    <ul>
-                        <li>• DeMar DeRozan (мидрейндж) - 0.916 очка за бросок</li>
-                        <li>• Keyonte George (трешки с дуги) - 0.956 очка за бросок</li>
-                        <li>• Devin Booker (трешки с дуги) - 0.989 очка за бросок</li>
-                    </ul>
-                </div>
-                <div class="insight-section">
-                    <h4>⚡ Интересные факты:</h4>
-                    <ul>
-                        <li>• Evan Mobley данками набирает больше очков, чем КД мидрейнджем</li>
-                        <li>• Самый неэффективный объемный бросок - мидрейндж ДеРозана</li>
-                        <li>• Угловые трешки эффективнее обычных на 10%</li>
-                    </ul>
-                </div>
-            </div>
-        </div>
     </div>
 
     <!-- Hover tooltip -->
@@ -110,7 +79,7 @@
         let allCircles, allTexts;
         let currentSearch = '';
 
-        // ИСПРАВЛЕННАЯ функция поиска
+        // ИСПРАВЛЕННАЯ функция поиска - убираем ВСЕ тексты при поиске
         function searchPlayers(searchTerm) {
             currentSearch = searchTerm.toLowerCase().trim();
             
@@ -124,6 +93,11 @@
                         .classed('circle-highlighted circle-dimmed', false)
                         .classed('circle-key-player', isKey)
                         .classed('circle-normal', !isKey);
+                });
+
+                // Показываем тексты только для ключевых игроков
+                allTexts.style('display', function(d) {
+                    return NBA_Utils.isKeyPlayer(d.player_name, d.shot_type) ? 'block' : 'none';
                 });
 
                 allTexts.each(function(d) {
@@ -146,11 +120,12 @@
             );
 
             if (matches.length === 0) {
-                // Если нет совпадений, затемняем все
+                // Если нет совпадений, затемняем все и СКРЫВАЕМ все тексты
                 allCircles.classed('circle-dimmed', true)
                           .classed('circle-highlighted circle-key-player circle-normal', false);
-                allTexts.classed('text-dimmed', true)
-                        .classed('text-highlighted text-key-player', false);
+                
+                // УБИРАЕМ ВСЕ ТЕКСТЫ
+                allTexts.style('display', 'none');
                 return;
             }
 
@@ -167,16 +142,20 @@
                     .classed('circle-key-player circle-normal', false);
             });
 
+            // ПОКАЗЫВАЕМ тексты только для найденных игроков
             allTexts.each(function(d) {
                 const text = d3.select(this);
                 const isMatch = matches.some(m => 
                     m.player_name === d.player_name && m.shot_type === d.shot_type
                 );
                 
-                text
-                    .classed('text-highlighted', isMatch)
-                    .classed('text-dimmed', !isMatch)
-                    .classed('text-key-player', false);
+                if (isMatch) {
+                    text.style('display', 'block')
+                        .classed('text-highlighted', true)
+                        .classed('text-dimmed text-key-player', false);
+                } else {
+                    text.style('display', 'none');
+                }
             });
         }
 
